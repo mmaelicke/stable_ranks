@@ -11,7 +11,12 @@ import logging
 
 # parse parameters
 kwargs = get_parameter()
-data = get_data_paths()
+try:
+    data = get_data_paths()
+    HAS_DATA = True
+except KeyError:
+    data = {}
+    HAS_DATA = False
 
 # check if a toolname was set in env
 toolname = os.environ.get('TOOL_RUN', 'foobar').lower()
