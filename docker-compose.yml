@@ -1,16 +1,52 @@
 services:
-  foobar:
+
+  db:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: metacatalog
+    expose:
+      - 5432
+    ports:
+      - 5445:5432
+    volumes:
+      - ../tool_images/tool_vforwater_loader/data/ismn_dev/pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+  data-loader:
     build: .
     volumes:
-      - ./in:/in
-      - ./out:/out
-      - ./src:/src
-    # for development bind to juyper
-    #ports:
-    #  - 8888:8888
-    # command: ["jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root"]
-    # production
+      - ./workflow/loader/in:/in
+      - ./workflow/loader/out:/out
+#      - ./src:/src
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      TOOL_RUN: foobar
-    command: ["python",  "run.py"]
+      METACATALOG_URI: postgresql://postgres:postgres@db:5432/metacatalog
+      TOOL_RUN: data-loader
+    command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"]
+
+
+  # stable-ranks:
+  #   build: .
+  #   volumes:
+  #     - ./workflow/stable_ranks/in:/in
+  #     - ./workflow/stable_ranks/out:/out
+
+    # for development bind to juyper
+    # ports:
+    #  - 8000:8000
+    # command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root"]
+    # production
+    # environment:
+    #   TOOL_RUN: foobar
+    # command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"]
     
