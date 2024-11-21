@@ -12,7 +12,9 @@ RUN pip install \
     duckdb==1.1.3 \ 
     polars==1.14.0 \
     altair==5.4.1 \
-    folium==0.18.0
+    folium==0.18.0 \
+    "vegafusion[embed]==1.6.9" \
+    anywidget==0.9.13
 
 # if you do not need data-preloading as your tool does that on its own
 # you can use this instread of the line above to use a json2args version

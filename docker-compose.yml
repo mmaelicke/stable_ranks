@@ -11,7 +11,7 @@ services:
     ports:
       - 5445:5432
     volumes:
-      - ../tool_images/tool_vforwater_loader/data/ismn_dev/pg_data:/var/lib/postgresql/data
+      - ./data/pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
       interval: 1s
@@ -23,7 +23,8 @@ services:
     volumes:
       - ./workflow/loader/in:/in
       - ./workflow/loader/out:/out
-#      - ./src:/src
+      - ./data/raw:/data
+      - ./src:/src
     links:
       - db
     depends_on:
@@ -31,22 +32,29 @@ services:
         condition: service_healthy
     environment:
       METACATALOG_URI: postgresql://postgres:postgres@db:5432/metacatalog
-      TOOL_RUN: data-loader
-    command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"]
+      TOOL_RUN: ismn_loader
+    # command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"] 
+    ports:
+     - 8000:8000
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root", "--NotebookApp.token='dev'"]
 
 
-  # stable-ranks:
-  #   build: .
-  #   volumes:
-  #     - ./workflow/stable_ranks/in:/in
-  #     - ./workflow/stable_ranks/out:/out
-
+  stable-ranks:
+    build: .
+    volumes:
+      - ./workflow/loader/out:/in
+      - ./workflow/rank_analysis/out:/out
+      - ./src:/src
+      - type: bind
+        source: ./workflow/rank_analysis/in/input.json
+        target: /in/input.json
+        read_only: true
     # for development bind to juyper
     # ports:
     #  - 8000:8000
     # command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root"]
     # production
-    # environment:
-    #   TOOL_RUN: foobar
-    # command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"]
+    environment:
+      TOOL_RUN: ranks
+    command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm ranks python run.py'"]
     

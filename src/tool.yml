@@ -5,10 +5,19 @@ tools:
     parameters:
       database_name:
         type: string
-        default: database.duckdb
+        default: ismn.duckdb
       force_rebuild_duckdb:
         type: boolean
         default: false
         description: | 
           Force rebuild of the DuckDB database. If set to true, any existing DuckDB at /out/
           named like specified in the database_name parameter will be deleted and recreated.
+  rank_analysis:
+    title: Soil Moisture stable rank rank_analysis
+    decription: |
+      This exploratory tool is used to create graphs to analyize possible rank stability over time
+      for the input database.
+    parameters:
+      database_name:
+        type: string
+        default: database.duckdb
