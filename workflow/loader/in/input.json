@@ -1,0 +1,7 @@
+{
+    "ismn_loader": {
+        "parameters": {
+            "force_rebuild_duckdb": true
+        }
+    }
+}
