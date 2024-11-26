@@ -23,7 +23,7 @@ services:
     volumes:
       - ./workflow/loader/in:/in
       - ./workflow/loader/out:/out
-      - ./data/raw:/data
+      - ./data/files:/data
       - ./src:/src
     links:
       - db

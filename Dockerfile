@@ -14,7 +14,8 @@ RUN pip install \
     altair==5.4.1 \
     folium==0.18.0 \
     "vegafusion[embed]==1.6.9" \
-    anywidget==0.9.13
+    anywidget==0.9.13 \
+    tabulate==0.9.0
 
 # if you do not need data-preloading as your tool does that on its own
 # you can use this instread of the line above to use a json2args version
