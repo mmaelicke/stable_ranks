@@ -1,23 +1,22 @@
 tools:
   ismn_loader:
     title: Stable ranks MetaCatalog data loader
-    description: Loads the ISMN data as an example from an existing MetaCatalog database instance
+    description: | 
+      Loads an ISMN database dump to a Metacatalog instance. 
+      **This tool is meant to be run by database admins only.** The loader requires a connection
+      to the Metacatalog instance and needs the ISMN database dump to be at the machine that
+      is running MetaCatalog API. The upload tool does not (yet) send a copy of the data to the
+      API, but rather creates a Datasource pointing to the files themselves. The Datasource.args
+      are set to make MetaCatalog work with the *.stm files directly.
     parameters:
-      database_name:
+      ismn_location:
         type: string
-        default: ismn.duckdb
-      force_rebuild_duckdb:
-        type: boolean
-        default: false
+        description: |
+          Location of the unzipped database dump of ISMN. The structure assumes to have the Readme.txt
+          at the specified root and a folder for each network, containing a subfolder for each station.
+        default: /data/ismn
+      data_pattern:
+        type: string
         description: | 
-          Force rebuild of the DuckDB database. If set to true, any existing DuckDB at /out/
-          named like specified in the database_name parameter will be deleted and recreated.
-  rank_analysis:
-    title: Soil Moisture stable rank rank_analysis
-    decription: |
-      This exploratory tool is used to create graphs to analyize possible rank stability over time
-      for the input database.
-    parameters:
-      database_name:
-        type: string
-        default: database.duckdb
+          The pattern used to find all data files in the ISMN database dump.
+        default: "**/**/*.stm"
