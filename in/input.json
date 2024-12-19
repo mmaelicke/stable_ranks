@@ -1,7 +1,8 @@
 {
     "ismn_loader": {
         "parameters": {
-            "force_rebuild_duckdb": true
+            "ismn_location": "/data/ismn",
+            "data_pattern": "**/**/*.stm"
         }
     }
 }

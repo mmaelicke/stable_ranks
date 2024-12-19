@@ -16,13 +16,13 @@ services:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
       interval: 1s
       timeout: 1s
-      retries: 10
+      retries: 5
 
   data-loader:
     build: .
     volumes:
-      - ./workflow/loader/in:/in
-      - ./workflow/loader/out:/out
+      - ./in:/in
+      - ./out:/out
       - ./data/files:/data
       - ./src:/src
     links:
