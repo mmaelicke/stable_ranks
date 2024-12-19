@@ -8,22 +8,9 @@ RUN pip install \
     jupyter==1.1.1 \ 
     papermill==2.6.0 \
     matplotlib==3.9.2 \
-    metacatalog-api==0.2.1 \
-    duckdb==1.1.3 \ 
-    polars==1.14.0 \
-    altair==5.4.1 \
-    folium==0.18.0 \
-    "vegafusion[embed]==1.6.9" \
+    metacatalog-api==0.3.4 \
     anywidget==0.9.13 \
     tabulate==0.9.0
-
-# if you do not need data-preloading as your tool does that on its own
-# you can use this instread of the line above to use a json2args version
-# with less dependencies
-# RUN pip install json2args>=0.7.0
-
-# Do anything you need to install tool dependencies here
-# RUN echo "Replace this line with a tool"
 
 # create the tool input structure
 RUN mkdir /in
@@ -37,7 +24,7 @@ COPY ./CITATION.cf[f] /src/CITATION.cff
 
 WORKDIR /src
 
-# Use this for the finished too
+# Use this for the finished tool
 CMD ["python", "run.py"]
 
 # use this command for development
