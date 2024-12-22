@@ -41,7 +41,7 @@ pm.execute_notebook(
     tool_notebook,
     Path("/out") / tool_notebook.name,
     parameters={**kwargs, **data},
-    log_output=True,
+    log_output=False,
 )
 
 logger.info(f"##Tool Finish - {toolname}")
