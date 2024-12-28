@@ -8,7 +8,7 @@ RUN pip install \
     jupyter==1.1.1 \ 
     papermill==2.6.0 \
     matplotlib==3.9.2 \
-    metacatalog-api==0.3.4 \
+    metacatalog-api==0.3.5 \
     anywidget==0.9.13 \
     tabulate==0.9.0
 
