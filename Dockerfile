@@ -8,9 +8,14 @@ RUN pip install \
     jupyter==1.1.1 \ 
     papermill==2.6.0 \
     matplotlib==3.9.2 \
-    metacatalog-api==0.3.5 \
+#    metacatalog_client==0.1.2 \
     anywidget==0.9.13 \
     tabulate==0.9.0
+
+# Use a development version of metacatalog client
+RUN mkdir /metacatalog_client
+COPY metacatalog_client /metacatalog_client
+RUN cd /metacatalog_client && pip install -e .
 
 # create the tool input structure
 RUN mkdir /in

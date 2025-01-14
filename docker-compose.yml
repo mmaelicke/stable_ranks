@@ -14,17 +14,14 @@ services:
       - ./data/pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
-      interval: 1s
+      interval: 15s
       timeout: 1s
       retries: 5
-
-  data-loader:
-    build: .
+      start_period: 5s
+  api:
+    build: ./metacatalog-api/
     volumes:
-      - ./in:/in
-      - ./out:/out
       - ./data/files:/data
-      - ./src:/src
     links:
       - db
     depends_on:
@@ -32,10 +29,34 @@ services:
         condition: service_healthy
     environment:
       METACATALOG_URI: postgresql://postgres:postgres@db:5432/metacatalog
+      PORT: 8005
+    ports:
+      - 8005:8005
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8005/version || exit 1"]
+      interval: 15s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
+  
+  data-loader:
+    build: .
+    volumes:
+      - ./in:/in
+      - ./out:/out
+      - ./src:/src
+      - ./data/files/ismn:/data/ismn
+    links:
+      - api
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      METACATALOG_URI: http://api:8005/
       TOOL_RUN: ismn_loader
     command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"] 
     #ports:
-    # - 8000:8000
+    #- 8000:8000
     #command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root", "--NotebookApp.token='dev'"]
 
 
