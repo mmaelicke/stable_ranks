@@ -1,0 +1,6 @@
+[submodule "metacatalog-api"]
+	path = metacatalog-api
+	url = git@github.com:vforwater/metacatalog-api
+[submodule "metacatalog_client"]
+	path = metacatalog_client
+	url = git@github.com:hydrocode-de/metacatalog_client
