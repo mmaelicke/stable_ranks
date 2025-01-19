@@ -14,10 +14,40 @@ services:
       - ./data/pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
-      interval: 15s
+      interval: 30s
       timeout: 1s
       retries: 5
-      start_period: 5s
+      start_period: 30s
+      start_interval: 1s
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PGADMIN_SERVERS_JSON: |
+        {
+          "Servers": {
+            "1": {
+              "Name": "Metacatalog DB",
+              "Group": "Servers",
+              "Host": "db",
+              "Port": 5432,
+              "MaintenanceDB": "postgres",
+              "Username": "postgres",
+              "Password": "postgres",
+              "SSLMode": "prefer"
+            }
+          }
+        }
+    ports:
+      - "3434:80"
+    depends_on:
+      - db
+    volumes:
+      - ./data/pgadmin/:/var/lib/pgadmin
   
   api:
     build: ./metacatalog-api/
@@ -35,10 +65,11 @@ services:
       - 8005:8005
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8005/version || exit 1"]
-      interval: 15s
-      timeout: 1s
+      interval: 30s
+      timeout: 10s
       retries: 5
       start_period: 30s
+      start_interval: 1s
   
   data-loader:
     build: .
@@ -55,10 +86,10 @@ services:
     environment:
       METACATALOG_URI: http://api:8005/
       TOOL_RUN: ismn_loader
-    command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"] 
-    #ports:
-    #- 8000:8000
-    #command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root", "--NotebookApp.token='dev'"]
+    #command: ["echo",  "run the loader with an active MetaCatalog instance like: 'docker compose run --rm data-loader python run.py'"] 
+    ports:
+    - 8000:8000
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8000", "--no-browser", "--allow-root", "--NotebookApp.token='dev'"]
 
   stable-ranks:
     build: .
