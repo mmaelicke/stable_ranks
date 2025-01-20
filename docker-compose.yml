@@ -81,6 +81,7 @@ services:
       - ./out:/out
       - ./src:/src
       - ./data/files/ismn:/data/ismn
+      - ./metacatalog_client:/metacatalog_client
     links:
       - api
     depends_on:
